@@ -21,10 +21,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.Lume.model.Livro
+import com.example.Lume.model.LivroViewModel
 import com.example.Lume.ui.theme.LilasPrincipal
 
 @Composable
-fun CadastroForms(onAdcionarLivros : (Livro) -> Unit) {
+fun CadastroForms(viewModel: LivroViewModel) {
 
     var tituloLivro by remember { mutableStateOf("") }
     var autor by remember { mutableStateOf("") }
@@ -82,7 +83,7 @@ fun CadastroForms(onAdcionarLivros : (Livro) -> Unit) {
                     genero = genero,
                     status = "LENDO"
                 )
-                onAdcionarLivros(livro)
+                viewModel.adicionarLivro(livro)
             })
         }
     }
@@ -125,10 +126,5 @@ fun Botao(texto: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun CadastroFormsPreview() {
-
-    CadastroForms(
-        onAdcionarLivros = { livro ->
-            println("Preview recebeu: $livro")
-        }
-    )
+    CadastroForms(LivroViewModel())
 }

@@ -5,10 +5,9 @@ import androidx.lifecycle.ViewModel
 
 class LivroViewModel : ViewModel() {
 
-    private val _livros = mutableStateListOf<Livro>()
-    val livros: List<Livro> = _livros
+    val livros = mutableStateListOf<Livro>()
 
     fun adicionarLivro(livro: Livro) {
-        _livros.add(livro)
+        livros.add(livro)
     }
 }
