@@ -3,6 +3,7 @@ package com.example.Lume
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +36,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
+import com.example.Lume.feature.Cadastro.CadastroScreen
 import com.example.Lume.feature.biblioteca.BibliotecaScreen
+import com.example.Lume.model.LivroViewModel
 import com.example.Lume.ui.theme.LilasClaro
 import com.example.Lume.ui.theme.LilasPrincipal
 import com.example.Lume.ui.theme.LumeTheme
@@ -43,19 +47,24 @@ import com.example.Lume.ui.theme.TextoPrincipal
 import com.example.Lume.ui.theme.TextoSecundario
 
 class MainActivity : ComponentActivity() {
+
+    private val viewModel: LivroViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             LumeTheme {
-                LumeApp()
+                LumeApp(viewModel)
             }
         }
     }
 }
 
 @Composable
-fun LumeApp() {
+fun LumeApp(
+    viewModel: LivroViewModel){
+
     var telaAtual by rememberSaveable {
         mutableStateOf(AppDestination.LIVROS)
     }
@@ -81,7 +90,7 @@ fun LumeApp() {
                 .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
         ) {
-            AppContent(telaAtual = telaAtual)
+            AppContent(telaAtual = telaAtual, viewModel = viewModel)
         }
     }
 }
@@ -104,6 +113,8 @@ fun LumeTopBar() {
         )
     }
 }
+
+
 
 @Composable
 fun LumeBottomBar(
@@ -164,12 +175,13 @@ fun LumeBottomBar(
 
 @Composable
 fun AppContent(
-    telaAtual: AppDestination
+    telaAtual: AppDestination,
+    viewModel: LivroViewModel
 ) {
     when (telaAtual) {
-        AppDestination.LIVROS -> LivrosScreen()
+        AppDestination.LIVROS -> LivrosScreen(viewModel)
         AppDestination.SORTEAR -> SortearScreen()
-        AppDestination.HOME -> HomeScreen()
+        AppDestination.HOME -> HomeScreen(viewModel)
         AppDestination.METAS -> MetasScreen()
     }
 }
@@ -185,8 +197,8 @@ enum class AppDestination(
 }
 
 @Composable
-fun LivrosScreen() {
-    BibliotecaScreen()
+fun LivrosScreen(viewModel: LivroViewModel) {
+    BibliotecaScreen(viewModel)
 }
 
 @Composable
@@ -213,19 +225,8 @@ fun SortearScreen() {
 }
 
 @Composable
-fun HomeScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp)
-    ) {
-        Text(
-            text = "Tela Home",
-            color = TextoPrincipal,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
-    }
+fun HomeScreen(viewModel: LivroViewModel) {
+    CadastroScreen(viewModel)
 }
 
 @Composable
@@ -247,7 +248,8 @@ fun MetasScreen() {
 @Preview(showBackground = true)
 @Composable
 fun LumeAppPreview() {
+    val viewModel : LivroViewModel = LivroViewModel();
     LumeTheme {
-        LumeApp()
+        LumeApp(viewModel)
     }
 }

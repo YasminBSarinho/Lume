@@ -18,24 +18,16 @@ import androidx.compose.ui.unit.dp
 import com.example.Lume.feature.biblioteca.components.BibliotecaHeader
 import com.example.Lume.feature.biblioteca.components.BibliotecaStatus
 import com.example.Lume.feature.biblioteca.components.CardLivro
-import com.example.Lume.feature.biblioteca.components.LivroModelUi
 import com.example.Lume.feature.biblioteca.components.Status
+import com.example.Lume.model.LivroViewModel
 import com.example.Lume.ui.theme.LumeTheme
 
 @Composable
-fun BibliotecaScreen() {
+fun BibliotecaScreen(viewModel: LivroViewModel) {
 
     var statusEscolhido by remember {
         mutableStateOf(Status.TODOS)
     }
-
-    val livros = listOf(
-        LivroModelUi("O Morro dos Ventos Uivantes", "Romance", "Lendo"),
-        LivroModelUi("Orgulho e Preconceito", "Romance", "Lido"),
-        LivroModelUi("A Cantiga dos Pássaros", "Fantasia", "TBR"),
-        LivroModelUi("Dom Casmurro", "Clássico", "Lido"),
-        LivroModelUi("A Hora da Estrela", "Literatura", "TBR")
-    )
 
     Column(
         modifier = Modifier.padding(24.dp)
@@ -60,7 +52,7 @@ fun BibliotecaScreen() {
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.weight(1f)
         ) {
-            items(livros) { livro ->
+            items(viewModel.livros) { livro ->
                 CardLivro(
                     titulo = livro.titulo,
                     genero = livro.genero,
@@ -76,6 +68,6 @@ fun BibliotecaScreen() {
 @Composable
 fun BibliotecaScreenPreview() {
     LumeTheme{
-        BibliotecaScreen()
+        BibliotecaScreen(LivroViewModel())
     }
 }
