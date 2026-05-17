@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import com.example.Lume.feature.biblioteca.components.BibliotecaHeader
 import com.example.Lume.feature.biblioteca.components.BibliotecaStatus
 import com.example.Lume.feature.biblioteca.components.Status
+import com.example.Lume.ui.theme.LumeTheme
 
 @Composable
 fun BibliotecaScreen() {
@@ -44,5 +45,7 @@ fun BibliotecaScreen() {
 @Preview(showBackground = true)
 @Composable
 fun BibliotecaScreenPreview() {
-    BibliotecaScreen()
+    LumeTheme{
+        BibliotecaScreen()
+    }
 }

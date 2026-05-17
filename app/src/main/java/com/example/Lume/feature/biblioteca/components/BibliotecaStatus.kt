@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
+import com.example.Lume.ui.theme.LilasPrincipal
 
 enum class Status(val texto: String){
     TODOS("Todos"),
@@ -40,16 +41,16 @@ private fun StatusItem(texto: String, selecionado: Boolean, onClick: () -> Unit)
     val corTexto = if (selecionado){
         Color.White
     } else {
-        Color(0xFFC9A4DD)
+        LilasPrincipal
     }
 
     val corBackground = if (selecionado){
-        Color(0xFFC9A4DD)
+        LilasPrincipal
     } else {
         Color.White
     }
 
-    val corBorda = Color(0xFFC9A4DD)
+    val corBorda = LilasPrincipal
 
 
     Text(
