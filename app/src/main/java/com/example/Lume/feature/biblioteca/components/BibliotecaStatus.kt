@@ -17,8 +17,9 @@ import com.example.Lume.ui.theme.LilasPrincipal
 
 enum class Status(val texto: String){
     TODOS("Todos"),
+    TBR("TBR"),
     LENDO("Lendo"),
-    FINALIZADOS("Finalizados")
+    LIDO("Lido")
 }
 
 @Composable
