@@ -20,10 +20,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.Lume.model.Livro
 import com.example.Lume.ui.theme.LilasPrincipal
 
 @Composable
-fun CadastroForms() {
+fun CadastroForms(onAdcionarLivros : (Livro) -> Unit) {
 
     var tituloLivro by remember { mutableStateOf("") }
     var autor by remember { mutableStateOf("") }
@@ -73,7 +74,16 @@ fun CadastroForms() {
             horizontalArrangement = Arrangement.Center
         ) {
 
-            Botao(texto = "Cadastrar")
+            Botao(texto = "Cadastrar", onClick = {
+                val livro = Livro(
+                    titulo = tituloLivro,
+                    autor = autor,
+                    ano = ano,
+                    genero = genero,
+                    status = "LENDO"
+                )
+                onAdcionarLivros(livro)
+            })
         }
     }
 }
@@ -94,12 +104,10 @@ fun CampoCadastro(titulo: String, valor: String, onValueChange: (String) -> Unit
 }
 
 @Composable
-fun Botao(texto: String, modifier: Modifier = Modifier) {
+fun Botao(texto: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
 
     Button(
-        onClick = {
-            println("Livro cadastrado")
-        },
+        onClick = onClick,
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = LilasPrincipal
@@ -117,5 +125,10 @@ fun Botao(texto: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun CadastroFormsPreview() {
-    CadastroForms()
+
+    CadastroForms(
+        onAdcionarLivros = { livro ->
+            println("Preview recebeu: $livro")
+        }
+    )
 }

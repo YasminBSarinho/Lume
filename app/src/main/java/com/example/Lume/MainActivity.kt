@@ -23,7 +23,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -35,7 +37,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.Lume.feature.Cadastro.CadastroScreen
 import com.example.Lume.feature.biblioteca.BibliotecaScreen
+import com.example.Lume.model.Livro
 import com.example.Lume.ui.theme.LilasClaro
 import com.example.Lume.ui.theme.LilasPrincipal
 import com.example.Lume.ui.theme.LumeTheme
@@ -56,6 +60,22 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun LumeApp() {
+    val livros = remember {mutableStateListOf<Livro>()}
+
+    fun adicionarLivro(livro: Livro) {
+
+        if (
+            livro.titulo.isBlank() ||
+            livro.autor.isBlank() ||
+            livro.ano.isBlank() ||
+            livro.genero.isBlank()
+        ) {
+            return
+        }
+
+        livros.add(livro)
+    }
+
     var telaAtual by rememberSaveable {
         mutableStateOf(AppDestination.LIVROS)
     }
@@ -81,7 +101,7 @@ fun LumeApp() {
                 .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
         ) {
-            AppContent(telaAtual = telaAtual)
+            AppContent(telaAtual = telaAtual, onAdicionarLivro = :: adicionarLivro, livros = livros)
         }
     }
 }
@@ -104,6 +124,8 @@ fun LumeTopBar() {
         )
     }
 }
+
+
 
 @Composable
 fun LumeBottomBar(
@@ -164,12 +186,14 @@ fun LumeBottomBar(
 
 @Composable
 fun AppContent(
-    telaAtual: AppDestination
+    telaAtual: AppDestination,
+    onAdicionarLivro: (Livro) -> Unit,
+    livros: List<Livro>
 ) {
     when (telaAtual) {
-        AppDestination.LIVROS -> LivrosScreen()
+        AppDestination.LIVROS -> LivrosScreen(livros)
         AppDestination.SORTEAR -> SortearScreen()
-        AppDestination.HOME -> HomeScreen()
+        AppDestination.HOME -> HomeScreen(onAdicionarLivro)
         AppDestination.METAS -> MetasScreen()
     }
 }
@@ -185,8 +209,8 @@ enum class AppDestination(
 }
 
 @Composable
-fun LivrosScreen() {
-    BibliotecaScreen()
+fun LivrosScreen(livros : List<Livro>) {
+    BibliotecaScreen(livros = livros)
 }
 
 @Composable
@@ -213,19 +237,8 @@ fun SortearScreen() {
 }
 
 @Composable
-fun HomeScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp)
-    ) {
-        Text(
-            text = "Tela Home",
-            color = TextoPrincipal,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
-    }
+fun HomeScreen(onAdicionarLivro: (Livro) -> Unit) {
+    CadastroScreen(onAdicionarLivro)
 }
 
 @Composable

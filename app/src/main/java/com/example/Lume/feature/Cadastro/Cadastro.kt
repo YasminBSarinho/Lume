@@ -10,9 +10,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.Lume.feature.Cadastro.components.CadastroForms
 import com.example.Lume.feature.Cadastro.components.CadastroHeader
+import com.example.Lume.model.Livro
 
 @Composable
-fun CadastroScreen(){
+fun CadastroScreen(onAdcionarLivros : (Livro) -> Unit){
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -22,12 +23,17 @@ fun CadastroScreen(){
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        CadastroForms()
+        CadastroForms(onAdcionarLivros)
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun CadastroScreenPreview(){
-   CadastroScreen()
+fun CadastroScreenPreview() {
+
+    CadastroScreen(
+        onAdcionarLivros = { livro ->
+            println("Preview cadastro: $livro")
+        }
+    )
 }

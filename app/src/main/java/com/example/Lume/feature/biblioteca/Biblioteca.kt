@@ -18,24 +18,16 @@ import androidx.compose.ui.unit.dp
 import com.example.Lume.feature.biblioteca.components.BibliotecaHeader
 import com.example.Lume.feature.biblioteca.components.BibliotecaStatus
 import com.example.Lume.feature.biblioteca.components.CardLivro
-import com.example.Lume.feature.biblioteca.components.LivroModelUi
+import com.example.Lume.model.Livro
 import com.example.Lume.feature.biblioteca.components.Status
 import com.example.Lume.ui.theme.LumeTheme
 
 @Composable
-fun BibliotecaScreen() {
+fun BibliotecaScreen(livros : List<Livro>) {
 
     var statusEscolhido by remember {
         mutableStateOf(Status.TODOS)
     }
-
-    val livros = listOf(
-        LivroModelUi("O Morro dos Ventos Uivantes", "Romance", "Lendo"),
-        LivroModelUi("Orgulho e Preconceito", "Romance", "Lido"),
-        LivroModelUi("A Cantiga dos Pássaros", "Fantasia", "TBR"),
-        LivroModelUi("Dom Casmurro", "Clássico", "Lido"),
-        LivroModelUi("A Hora da Estrela", "Literatura", "TBR")
-    )
 
     Column(
         modifier = Modifier.padding(24.dp)
@@ -75,7 +67,14 @@ fun BibliotecaScreen() {
 @Preview(showBackground = true)
 @Composable
 fun BibliotecaScreenPreview() {
+
+    val livrosFake = listOf(
+        Livro("O Morro dos Ventos Uivantes", "chico", "2025", "Romance", "Lendo"),
+        Livro("Dom Casmurro", "Clássico","chico", "2025", "Lido"),
+        Livro("A Hora da Estrela", "chico", "2025", "Literatura", "TBR")
+    )
+
     LumeTheme{
-        BibliotecaScreen()
+        BibliotecaScreen(livrosFake)
     }
 }
