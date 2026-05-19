@@ -81,7 +81,7 @@ fun CadastroForms(viewModel: LivroViewModel) {
                     autor = autor,
                     ano = ano,
                     genero = genero,
-                    status = "LENDO"
+                    status = "TBR"
                 )
                 viewModel.adicionarLivro(livro)
             })

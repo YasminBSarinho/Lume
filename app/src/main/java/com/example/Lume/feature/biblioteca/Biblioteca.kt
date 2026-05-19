@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +28,13 @@ fun BibliotecaScreen(viewModel: LivroViewModel) {
 
     var statusEscolhido by remember {
         mutableStateOf(Status.TODOS)
+    }
+
+    val livrosFiltrados = when (statusEscolhido) {
+        Status.TODOS -> viewModel.livros
+        else -> viewModel.livros.filter { livro ->
+            livro.status.trim() == statusEscolhido.texto
+        }
     }
 
     Column(
@@ -52,7 +60,7 @@ fun BibliotecaScreen(viewModel: LivroViewModel) {
             verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier.weight(1f)
         ) {
-            items(viewModel.livros) { livro ->
+            items(livrosFiltrados) { livro ->
                 CardLivro(
                     titulo = livro.titulo,
                     genero = livro.genero,
