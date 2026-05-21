@@ -3,7 +3,6 @@ package com.example.Lume
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,10 +35,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModelProvider
 import com.example.Lume.feature.Cadastro.CadastroScreen
 import com.example.Lume.feature.biblioteca.BibliotecaScreen
-import com.example.Lume.model.LivroViewModel
 import com.example.Lume.ui.theme.LilasClaro
 import com.example.Lume.ui.theme.LilasPrincipal
 import com.example.Lume.ui.theme.LumeTheme
@@ -48,22 +45,19 @@ import com.example.Lume.ui.theme.TextoSecundario
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: LivroViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
             LumeTheme {
-                LumeApp(viewModel)
+                LumeApp()
             }
         }
     }
 }
 
 @Composable
-fun LumeApp(
-    viewModel: LivroViewModel){
+fun LumeApp() {
 
     var telaAtual by rememberSaveable {
         mutableStateOf(AppDestination.LIVROS)
@@ -90,7 +84,7 @@ fun LumeApp(
                 .background(MaterialTheme.colorScheme.background)
                 .padding(paddingValues)
         ) {
-            AppContent(telaAtual = telaAtual, viewModel = viewModel)
+            AppContent(telaAtual = telaAtual)
         }
     }
 }
@@ -175,13 +169,12 @@ fun LumeBottomBar(
 
 @Composable
 fun AppContent(
-    telaAtual: AppDestination,
-    viewModel: LivroViewModel
+    telaAtual: AppDestination
 ) {
     when (telaAtual) {
-        AppDestination.LIVROS -> LivrosScreen(viewModel)
+        AppDestination.LIVROS -> LivrosScreen()
         AppDestination.SORTEAR -> SortearScreen()
-        AppDestination.HOME -> HomeScreen(viewModel)
+        AppDestination.HOME -> HomeScreen()
         AppDestination.METAS -> MetasScreen()
     }
 }
@@ -197,8 +190,8 @@ enum class AppDestination(
 }
 
 @Composable
-fun LivrosScreen(viewModel: LivroViewModel) {
-    BibliotecaScreen(viewModel)
+fun LivrosScreen() {
+    BibliotecaScreen()
 }
 
 @Composable
@@ -225,8 +218,8 @@ fun SortearScreen() {
 }
 
 @Composable
-fun HomeScreen(viewModel: LivroViewModel) {
-    CadastroScreen(viewModel)
+fun HomeScreen() {
+    CadastroScreen()
 }
 
 @Composable
@@ -248,8 +241,7 @@ fun MetasScreen() {
 @Preview(showBackground = true)
 @Composable
 fun LumeAppPreview() {
-    val viewModel : LivroViewModel = LivroViewModel();
     LumeTheme {
-        LumeApp(viewModel)
+        LumeApp()
     }
 }

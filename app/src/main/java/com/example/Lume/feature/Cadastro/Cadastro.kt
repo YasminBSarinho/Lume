@@ -15,7 +15,7 @@ import com.example.Lume.model.LivroViewModel
 
 @Composable
 fun CadastroScreen(
-    livroViewModel: LivroViewModel,
+    livroViewModel: LivroViewModel = viewModel(),
     cadastroViewModel: CadastroViewModel = viewModel()
 ){
     val uiState = cadastroViewModel.uiState

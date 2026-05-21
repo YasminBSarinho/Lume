@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Lume.feature.biblioteca.components.BibliotecaHeader
 import com.example.Lume.feature.biblioteca.components.BibliotecaStatus
 import com.example.Lume.feature.biblioteca.components.CardLivro
@@ -24,7 +25,7 @@ import com.example.Lume.model.LivroViewModel
 import com.example.Lume.ui.theme.LumeTheme
 
 @Composable
-fun BibliotecaScreen(viewModel: LivroViewModel) {
+fun BibliotecaScreen(viewModel: LivroViewModel = viewModel()) {
 
     var statusEscolhido by remember {
         mutableStateOf(Status.TODOS)
