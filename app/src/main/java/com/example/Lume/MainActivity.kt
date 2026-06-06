@@ -42,6 +42,7 @@ import com.example.Lume.ui.theme.LilasPrincipal
 import com.example.Lume.ui.theme.LumeTheme
 import com.example.Lume.ui.theme.TextoPrincipal
 import com.example.Lume.ui.theme.TextoSecundario
+import com.example.Lume.feature.sorteador.SorteadorScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -196,25 +197,7 @@ fun LivrosScreen() {
 
 @Composable
 fun SortearScreen() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp)
-    ) {
-        Text(
-            text = "Tela de Sorteio",
-            color = TextoPrincipal,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = "Aqui depois entra a tela de sortear livro.",
-            color = TextoPrincipal
-        )
-    }
+    SorteadorScreen()
 }
 
 @Composable

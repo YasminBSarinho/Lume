@@ -10,4 +10,9 @@ class LivroViewModel : ViewModel() {
     fun adicionarLivro(livro: Livro) {
         livros.add(livro)
     }
+
+    fun removerLivro(livro: Livro) {
+        livros.remove(livro)
+    }
+
 }
