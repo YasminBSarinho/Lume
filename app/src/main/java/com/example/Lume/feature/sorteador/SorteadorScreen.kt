@@ -61,7 +61,159 @@ import com.example.Lume.ui.theme.TextoSecundario
 
 private const val TODOS_OS_GENEROS = "Todos"
 
+@Composable
+fun SorteadorScreen(
+    livroViewModel: LivroViewModel = viewModel()
+) {
+    val context = LocalContext.current
 
+    var generoSelecionado by remember { mutableStateOf(TODOS_OS_GENEROS) }
+    var livroSorteado by remember { mutableStateOf<Livro?>(null) }
+    var mostrarCadastro by remember { mutableStateOf(false) }
+
+    val generos = remember(livroViewModel.livros.size, livroViewModel.livros.map { it.genero }) {
+        listOf(TODOS_OS_GENEROS) + livroViewModel.livros
+            .map { it.genero.trim() }
+            .filter { it.isNotBlank() }
+            .distinct()
+            .sorted()
+    }
+
+    val livrosFiltrados = if (generoSelecionado == TODOS_OS_GENEROS) {
+        livroViewModel.livros
+    } else {
+        livroViewModel.livros.filter { livro ->
+            livro.genero.trim().equals(generoSelecionado, ignoreCase = true)
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 24.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(18.dp)
+    ) {
+        SorteadorHeader()
+
+        CardEscolhaGenero(
+            generoSelecionado = generoSelecionado,
+            generos = generos,
+            onGeneroSelecionado = { novoGenero ->
+                generoSelecionado = novoGenero
+            }
+        )
+
+        CardSeusLivros(
+            livros = livroViewModel.livros,
+            livrosFiltrados = livrosFiltrados,
+            generoSelecionado = generoSelecionado
+        )
+
+        BotaoSorteador(
+            texto = "Sortear Livro",
+            corFundo = LilasPrincipal,
+            corTexto = Color.White,
+            onClick = {
+                if (livrosFiltrados.isNotEmpty()) {
+                    livroSorteado = livrosFiltrados.random()
+                } else {
+                    Toast.makeText(
+                        context,
+                        "Nenhum livro disponível para sortear!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        )
+
+        BotaoSorteador(
+            texto = "Cadastrar Livro",
+            corFundo = RosaBadge,
+            corTexto = LilasPrincipal,
+            onClick = {
+                mostrarCadastro = true
+            }
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+    }
+
+    livroSorteado?.let { livro ->
+        ResultadoSorteioBottomSheet(
+            livro = livro,
+            onDismiss = {
+                livroSorteado = null
+            },
+            onSortearNovamente = {
+                if (livrosFiltrados.isNotEmpty()) {
+                    livroSorteado = livrosFiltrados.random()
+                } else {
+                    livroSorteado = null
+                    Toast.makeText(
+                        context,
+                        "Nenhum livro disponível para sortear!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            },
+            onExcluir = {
+                livroViewModel.removerLivro(livro)
+                livroSorteado = null
+
+                Toast.makeText(
+                    context,
+                    "${livro.titulo} removido da lista",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        )
+    }
+
+    if (mostrarCadastro) {
+        CadastroLivroBottomSheet(
+            onDismiss = {
+                mostrarCadastro = false
+            },
+            onCadastrar = { titulo, genero ->
+                val novoLivro = Livro(
+                    titulo = titulo,
+                    autor = "Não informado",
+                    ano = "",
+                    genero = genero,
+                    status = Status.TBR.texto
+                )
+
+                livroViewModel.adicionarLivro(novoLivro)
+                mostrarCadastro = false
+
+                Toast.makeText(
+                    context,
+                    "$titulo cadastrado com sucesso!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        )
+    }
+}
+
+@Composable
+private fun SorteadorHeader() {
+    Column {
+        Text(
+            text = "Sorteador",
+            color = TextoPrincipal,
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
+
+        Text(
+            text = "Escolha um gênero e sorteie sua próxima leitura",
+            color = TextoSecundario,
+            fontSize = 14.sp
+        )
+    }
+}
 
 @Composable
 private fun CardEscolhaGenero(
@@ -500,3 +652,68 @@ private fun CadastroLivroBottomSheet(
     }
 }
 
+@Preview(
+    showBackground = true,
+    showSystemUi = true,
+    name = "Sorteador com livros"
+)
+@Composable
+private fun SorteadorScreenPreview() {
+    val previewViewModel = remember {
+        LivroViewModel().apply {
+            adicionarLivro(
+                Livro(
+                    titulo = "A Biblioteca da Meia-Noite",
+                    autor = "Matt Haig",
+                    ano = "2020",
+                    genero = "Ficção",
+                    status = Status.TBR.texto
+                )
+            )
+
+            adicionarLivro(
+                Livro(
+                    titulo = "É Assim que Acaba",
+                    autor = "Colleen Hoover",
+                    ano = "2016",
+                    genero = "Romance",
+                    status = Status.TBR.texto
+                )
+            )
+
+            adicionarLivro(
+                Livro(
+                    titulo = "O Hobbit",
+                    autor = "J.R.R. Tolkien",
+                    ano = "1937",
+                    genero = "Fantasia",
+                    status = Status.TBR.texto
+                )
+            )
+        }
+    }
+
+    LumeTheme {
+        SorteadorScreen(
+            livroViewModel = previewViewModel
+        )
+    }
+}
+
+@Preview(
+    showBackground = true,
+    showSystemUi = true,
+    name = "Sorteador vazio"
+)
+@Composable
+private fun SorteadorScreenVazioPreview() {
+    val previewViewModel = remember {
+        LivroViewModel()
+    }
+
+    LumeTheme {
+        SorteadorScreen(
+            livroViewModel = previewViewModel
+        )
+    }
+}
