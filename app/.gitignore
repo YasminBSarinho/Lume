@@ -1,1 +1,60 @@
-/build
+# Gradle
+.gradle/
+build/
+*/build/
+
+# Local configuration
+local.properties
+
+# Android Studio
+.idea/
+*.iml
+
+# Logs
+*.log
+
+# Generated files
+captures/
+.externalNativeBuild/
+.cxx/
+
+# APKs
+*.apk
+*.aab
+
+# Kotlin
+.kotlin/
+
+# KSP
+.ksp/
+**/build/generated/ksp/
+
+# Room Schemas (ignore se não estiver versionando schemas)
+schemas/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Java
+*.class
+
+# Keystore
+*.jks
+*.keystore
+
+# Firebase
+google-services.json
+
+# IntelliJ
+out/
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# Crashlytics
+com_crashlytics_export_strings.xml
+crashlytics.properties
+fabric.properties

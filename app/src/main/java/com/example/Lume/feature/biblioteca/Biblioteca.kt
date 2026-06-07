@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -20,21 +19,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Lume.feature.biblioteca.components.BibliotecaHeader
 import com.example.Lume.feature.biblioteca.components.BibliotecaStatus
 import com.example.Lume.feature.biblioteca.components.CardLivro
-import com.example.Lume.feature.biblioteca.components.Status
 import com.example.Lume.model.LivroViewModel
+import com.example.Lume.model.StatusLivro
 import com.example.Lume.ui.theme.LumeTheme
 
 @Composable
 fun BibliotecaScreen(viewModel: LivroViewModel = viewModel()) {
 
-    var statusEscolhido by remember {
-        mutableStateOf(Status.TODOS)
+    var statusEscolhido: StatusLivro? by remember {
+        mutableStateOf(StatusLivro.TODOS)
     }
 
     val livrosFiltrados = when (statusEscolhido) {
-        Status.TODOS -> viewModel.livros
+        StatusLivro.TODOS -> viewModel.livros
         else -> viewModel.livros.filter { livro ->
-            livro.status.trim() == statusEscolhido.texto
+            livro.status.trim() == statusEscolhido?.texto
         }
     }
 

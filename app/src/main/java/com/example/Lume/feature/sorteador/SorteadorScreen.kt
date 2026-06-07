@@ -47,9 +47,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Lume.feature.biblioteca.components.Status
 import com.example.Lume.model.Livro
 import com.example.Lume.model.LivroViewModel
+import com.example.Lume.model.StatusLivro
 import com.example.Lume.ui.theme.BrancoCard
 import com.example.Lume.ui.theme.LilasBorda
 import com.example.Lume.ui.theme.LilasClaro
@@ -181,7 +181,7 @@ fun SorteadorScreen(
                     autor = "Não informado",
                     ano = "",
                     genero = genero,
-                    status = Status.TBR.texto
+                    status = StatusLivro.TBR.texto
                 )
 
                 livroViewModel.adicionarLivro(novoLivro)
@@ -205,12 +205,6 @@ private fun SorteadorHeader() {
             color = TextoPrincipal,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
-        )
-
-        Text(
-            text = "Escolha um gênero e sorteie sua próxima leitura",
-            color = TextoSecundario,
-            fontSize = 14.sp
         )
     }
 }
@@ -667,7 +661,7 @@ private fun SorteadorScreenPreview() {
                     autor = "Matt Haig",
                     ano = "2020",
                     genero = "Ficção",
-                    status = Status.TBR.texto
+                    status = StatusLivro.TBR.texto
                 )
             )
 
@@ -677,7 +671,7 @@ private fun SorteadorScreenPreview() {
                     autor = "Colleen Hoover",
                     ano = "2016",
                     genero = "Romance",
-                    status = Status.TBR.texto
+                    status = StatusLivro.TBR.texto
                 )
             )
 
@@ -687,7 +681,7 @@ private fun SorteadorScreenPreview() {
                     autor = "J.R.R. Tolkien",
                     ano = "1937",
                     genero = "Fantasia",
-                    status = Status.TBR.texto
+                    status = StatusLivro.TBR.texto
                 )
             )
         }

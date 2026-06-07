@@ -37,12 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Lume.feature.Cadastro.CadastroScreen
 import com.example.Lume.feature.biblioteca.BibliotecaScreen
+import com.example.Lume.feature.sorteador.SorteadorScreen
 import com.example.Lume.ui.theme.LilasClaro
 import com.example.Lume.ui.theme.LilasPrincipal
 import com.example.Lume.ui.theme.LumeTheme
 import com.example.Lume.ui.theme.TextoPrincipal
 import com.example.Lume.ui.theme.TextoSecundario
-//import com.example.Lume.feature.sorteador.SorteadorScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -176,7 +176,7 @@ fun AppContent(
         AppDestination.LIVROS -> LivrosScreen()
         AppDestination.HOME -> HomeScreen()
         AppDestination.METAS -> MetasScreen()
-        else -> {}
+        AppDestination.SORTEAR -> SortearScreen()
     }
 }
 
@@ -195,10 +195,10 @@ fun LivrosScreen() {
     BibliotecaScreen()
 }
 
-//@Composable
-//fun SortearScreen() {
-//    SorteadorScreen()
-//}
+@Composable
+fun SortearScreen() {
+    SorteadorScreen()
+}
 
 @Composable
 fun HomeScreen() {
