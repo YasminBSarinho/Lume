@@ -32,6 +32,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,13 +67,14 @@ fun SorteadorScreen(
     livroViewModel: LivroViewModel = viewModel()
 ) {
     val context = LocalContext.current
+    val listaLivros by livroViewModel.livros.collectAsState()
 
     var generoSelecionado by remember { mutableStateOf(TODOS_OS_GENEROS) }
     var livroSorteado by remember { mutableStateOf<Livro?>(null) }
     var mostrarCadastro by remember { mutableStateOf(false) }
 
-    val generos = remember(livroViewModel.livros.size, livroViewModel.livros.map { it.genero }) {
-        listOf(TODOS_OS_GENEROS) + livroViewModel.livros
+    val generos = remember(listaLivros) {
+        listOf(TODOS_OS_GENEROS) + listaLivros
             .map { it.genero.trim() }
             .filter { it.isNotBlank() }
             .distinct()
@@ -80,9 +82,9 @@ fun SorteadorScreen(
     }
 
     val livrosFiltrados = if (generoSelecionado == TODOS_OS_GENEROS) {
-        livroViewModel.livros
+        listaLivros
     } else {
-        livroViewModel.livros.filter { livro ->
+        listaLivros.filter { livro ->
             livro.genero.trim().equals(generoSelecionado, ignoreCase = true)
         }
     }
@@ -105,7 +107,7 @@ fun SorteadorScreen(
         )
 
         CardSeusLivros(
-            livros = livroViewModel.livros,
+            livros = listaLivros,
             livrosFiltrados = livrosFiltrados,
             generoSelecionado = generoSelecionado
         )
@@ -181,7 +183,7 @@ fun SorteadorScreen(
                     autor = "Não informado",
                     ano = "",
                     genero = genero,
-                    status = StatusLivro.TBR.texto
+                    status = StatusLivro.TBR.texto,
                 )
 
                 livroViewModel.adicionarLivro(novoLivro)
@@ -649,65 +651,11 @@ private fun CadastroLivroBottomSheet(
 @Preview(
     showBackground = true,
     showSystemUi = true,
-    name = "Sorteador com livros"
+    name = "Sorteador"
 )
 @Composable
 private fun SorteadorScreenPreview() {
-    val previewViewModel = remember {
-        LivroViewModel().apply {
-            adicionarLivro(
-                Livro(
-                    titulo = "A Biblioteca da Meia-Noite",
-                    autor = "Matt Haig",
-                    ano = "2020",
-                    genero = "Ficção",
-                    status = StatusLivro.TBR.texto
-                )
-            )
-
-            adicionarLivro(
-                Livro(
-                    titulo = "É Assim que Acaba",
-                    autor = "Colleen Hoover",
-                    ano = "2016",
-                    genero = "Romance",
-                    status = StatusLivro.TBR.texto
-                )
-            )
-
-            adicionarLivro(
-                Livro(
-                    titulo = "O Hobbit",
-                    autor = "J.R.R. Tolkien",
-                    ano = "1937",
-                    genero = "Fantasia",
-                    status = StatusLivro.TBR.texto
-                )
-            )
-        }
-    }
-
     LumeTheme {
-        SorteadorScreen(
-            livroViewModel = previewViewModel
-        )
-    }
-}
-
-@Preview(
-    showBackground = true,
-    showSystemUi = true,
-    name = "Sorteador vazio"
-)
-@Composable
-private fun SorteadorScreenVazioPreview() {
-    val previewViewModel = remember {
-        LivroViewModel()
-    }
-
-    LumeTheme {
-        SorteadorScreen(
-            livroViewModel = previewViewModel
-        )
+        SorteadorScreen()
     }
 }
