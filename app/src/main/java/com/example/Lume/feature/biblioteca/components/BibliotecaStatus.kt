@@ -13,19 +13,19 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
+import com.example.Lume.model.StatusLivro
 import com.example.Lume.ui.theme.LilasPrincipal
 
-enum class Status(val texto: String){
-    TODOS("Todos"),
-    TBR("TBR"),
-    LENDO("Lendo"),
-    LIDO("Lido")
-}
 
 @Composable
-fun BibliotecaStatus(statusEscolhido: Status, onStatusSelecionado: (Status) -> Unit) {
+fun BibliotecaStatus(statusEscolhido: StatusLivro?, onStatusSelecionado: (StatusLivro?) -> Unit) {
     Row (horizontalArrangement = Arrangement.spacedBy(8.dp)){
-        Status.entries.forEach { status ->
+        StatusItem(
+            texto = "Todos",
+            selecionado = statusEscolhido == null,
+            onClick = { onStatusSelecionado(null) }
+        )
+        StatusLivro.entries.forEach { status ->
             StatusItem(
                 texto = status.texto,
                 selecionado = status == statusEscolhido,

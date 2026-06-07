@@ -42,7 +42,7 @@ import com.example.Lume.ui.theme.LilasPrincipal
 import com.example.Lume.ui.theme.LumeTheme
 import com.example.Lume.ui.theme.TextoPrincipal
 import com.example.Lume.ui.theme.TextoSecundario
-import com.example.Lume.feature.sorteador.SorteadorScreen
+//import com.example.Lume.feature.sorteador.SorteadorScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -174,9 +174,9 @@ fun AppContent(
 ) {
     when (telaAtual) {
         AppDestination.LIVROS -> LivrosScreen()
-        AppDestination.SORTEAR -> SortearScreen()
         AppDestination.HOME -> HomeScreen()
         AppDestination.METAS -> MetasScreen()
+        else -> {}
     }
 }
 
@@ -195,10 +195,10 @@ fun LivrosScreen() {
     BibliotecaScreen()
 }
 
-@Composable
-fun SortearScreen() {
-    SorteadorScreen()
-}
+//@Composable
+//fun SortearScreen() {
+//    SorteadorScreen()
+//}
 
 @Composable
 fun HomeScreen() {
