@@ -68,10 +68,16 @@ fun SorteadorScreen(
 ) {
     val context = LocalContext.current
     val listaLivros by livroViewModel.livros.collectAsState()
+    val generoSalvo by livroViewModel.generoSorteador.collectAsState()
+    val ultimoIdSalvo by livroViewModel.ultimoLivroSorteadoId.collectAsState()
 
-    var generoSelecionado by remember { mutableStateOf(TODOS_OS_GENEROS) }
+    var generoSelecionado by remember(generoSalvo) { mutableStateOf(generoSalvo) }
     var livroSorteado by remember { mutableStateOf<Livro?>(null) }
     var mostrarCadastro by remember { mutableStateOf(false) }
+
+    val ultimoLivroSorteado = remember(ultimoIdSalvo, listaLivros) {
+        listaLivros.find { it.id == ultimoIdSalvo }
+    }
 
     val generos = remember(listaLivros) {
         listOf(TODOS_OS_GENEROS) + listaLivros
@@ -98,11 +104,16 @@ fun SorteadorScreen(
     ) {
         SorteadorHeader()
 
+        ultimoLivroSorteado?.let { livro ->
+            CardUltimoSorteado(livro = livro)
+        }
+
         CardEscolhaGenero(
             generoSelecionado = generoSelecionado,
             generos = generos,
             onGeneroSelecionado = { novoGenero ->
                 generoSelecionado = novoGenero
+                livroViewModel.salvarGeneroSorteador(novoGenero)
             }
         )
 
@@ -118,7 +129,9 @@ fun SorteadorScreen(
             corTexto = Color.White,
             onClick = {
                 if (livrosFiltrados.isNotEmpty()) {
-                    livroSorteado = livrosFiltrados.random()
+                    val sorteado = livrosFiltrados.random()
+                    livroSorteado = sorteado
+                    livroViewModel.salvarUltimoLivroSorteadoId(sorteado.id)
                 } else {
                     Toast.makeText(
                         context,
@@ -149,7 +162,9 @@ fun SorteadorScreen(
             },
             onSortearNovamente = {
                 if (livrosFiltrados.isNotEmpty()) {
-                    livroSorteado = livrosFiltrados.random()
+                    val sorteado = livrosFiltrados.random()
+                    livroSorteado = sorteado
+                    livroViewModel.salvarUltimoLivroSorteadoId(sorteado.id)
                 } else {
                     livroSorteado = null
                     Toast.makeText(
@@ -208,6 +223,45 @@ private fun SorteadorHeader() {
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
+    }
+}
+
+@Composable
+private fun CardUltimoSorteado(livro: Livro) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = LilasClaro.copy(alpha = 0.3f)),
+        border = BorderStroke(1.dp, LilasBorda)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "Último livro sorteado",
+                    color = LilasPrincipal,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Text(
+                text = livro.titulo,
+                color = TextoPrincipal,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Text(
+                text = livro.genero,
+                color = TextoSecundario,
+                fontSize = 13.sp
+            )
+        }
     }
 }
 
