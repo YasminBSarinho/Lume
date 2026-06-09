@@ -48,8 +48,4 @@ fun CadastroScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CadastroScreenPreview() {
-    CadastroScreen(LivroViewModel())
-}
+

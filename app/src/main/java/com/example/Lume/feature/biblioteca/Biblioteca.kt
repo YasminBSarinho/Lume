@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -20,20 +20,22 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Lume.feature.biblioteca.components.BibliotecaHeader
 import com.example.Lume.feature.biblioteca.components.BibliotecaStatus
 import com.example.Lume.feature.biblioteca.components.CardLivro
-import com.example.Lume.feature.biblioteca.components.Status
 import com.example.Lume.model.LivroViewModel
+import com.example.Lume.model.StatusLivro
 import com.example.Lume.ui.theme.LumeTheme
 
 @Composable
 fun BibliotecaScreen(viewModel: LivroViewModel = viewModel()) {
 
+    val livros by viewModel.livros.collectAsState()
+
     var statusEscolhido by remember {
-        mutableStateOf(Status.TODOS)
+        mutableStateOf(StatusLivro.TODOS)
     }
 
     val livrosFiltrados = when (statusEscolhido) {
-        Status.TODOS -> viewModel.livros
-        else -> viewModel.livros.filter { livro ->
+        StatusLivro.TODOS -> livros
+        else -> livros.filter { livro ->
             livro.status.trim() == statusEscolhido.texto
         }
     }
@@ -43,7 +45,7 @@ fun BibliotecaScreen(viewModel: LivroViewModel = viewModel()) {
     ) {
         BibliotecaHeader(
             titulo = "Minha Biblioteca",
-            subtitulo = "5 livros na sua coleção"
+            subtitulo = "${livros.size} livros na sua coleção"
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -77,6 +79,6 @@ fun BibliotecaScreen(viewModel: LivroViewModel = viewModel()) {
 @Composable
 fun BibliotecaScreenPreview() {
     LumeTheme{
-        BibliotecaScreen(LivroViewModel())
+        BibliotecaScreen()
     }
 }

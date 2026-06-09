@@ -4,9 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.Lume.feature.biblioteca.components.Status
 import com.example.Lume.model.Livro
 import com.example.Lume.model.LivroViewModel
+import com.example.Lume.model.StatusLivro
 
 class CadastroViewModel : ViewModel() {
 
@@ -57,7 +57,7 @@ class CadastroViewModel : ViewModel() {
                 autor = uiState.autor,
                 ano = uiState.ano,
                 genero = uiState.genero,
-                status = Status.TBR.texto
+                status = StatusLivro.TBR.texto
             )
             
             livroViewModel.adicionarLivro(novoLivro)

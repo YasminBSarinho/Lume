@@ -27,4 +27,7 @@ interface LivroDao {
     @Query("SELECT * FROM livros ORDER BY titulo ASC")
     fun listarLivros(): Flow<List<LivroEntity>>
 
+    @Query("SELECT DISTINCT genero FROM livros WHERE genero IS NOT NULL AND genero != '' ORDER BY genero ASC")
+    fun listarGeneros(): Flow<List<String>>
+
 }

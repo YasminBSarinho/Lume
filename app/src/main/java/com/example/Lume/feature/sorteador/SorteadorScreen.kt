@@ -32,6 +32,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,10 +47,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.Lume.feature.biblioteca.components.Status
 import com.example.Lume.model.Livro
 import com.example.Lume.model.LivroViewModel
+import com.example.Lume.model.StatusLivro
 import com.example.Lume.ui.theme.BrancoCard
 import com.example.Lume.ui.theme.LilasBorda
 import com.example.Lume.ui.theme.LilasClaro
@@ -66,13 +68,20 @@ fun SorteadorScreen(
     livroViewModel: LivroViewModel = viewModel()
 ) {
     val context = LocalContext.current
+    val listaLivros by livroViewModel.livros.collectAsStateWithLifecycle()
+    val generoSalvo by livroViewModel.generoSorteador.collectAsStateWithLifecycle()
+    val ultimoIdSalvo by livroViewModel.ultimoLivroSorteadoId.collectAsStateWithLifecycle()
 
-    var generoSelecionado by remember { mutableStateOf(TODOS_OS_GENEROS) }
+    var generoSelecionado by remember(generoSalvo) { mutableStateOf(generoSalvo) }
     var livroSorteado by remember { mutableStateOf<Livro?>(null) }
     var mostrarCadastro by remember { mutableStateOf(false) }
 
-    val generos = remember(livroViewModel.livros.size, livroViewModel.livros.map { it.genero }) {
-        listOf(TODOS_OS_GENEROS) + livroViewModel.livros
+    val ultimoLivroSorteado = remember(ultimoIdSalvo, listaLivros) {
+        listaLivros.find { it.id == ultimoIdSalvo }
+    }
+
+    val generos = remember(listaLivros) {
+        listOf(TODOS_OS_GENEROS) + listaLivros
             .map { it.genero.trim() }
             .filter { it.isNotBlank() }
             .distinct()
@@ -80,9 +89,9 @@ fun SorteadorScreen(
     }
 
     val livrosFiltrados = if (generoSelecionado == TODOS_OS_GENEROS) {
-        livroViewModel.livros
+        listaLivros
     } else {
-        livroViewModel.livros.filter { livro ->
+        listaLivros.filter { livro ->
             livro.genero.trim().equals(generoSelecionado, ignoreCase = true)
         }
     }
@@ -96,16 +105,21 @@ fun SorteadorScreen(
     ) {
         SorteadorHeader()
 
+        ultimoLivroSorteado?.let { livro ->
+            CardUltimoSorteado(livro = livro)
+        }
+
         CardEscolhaGenero(
             generoSelecionado = generoSelecionado,
             generos = generos,
             onGeneroSelecionado = { novoGenero ->
                 generoSelecionado = novoGenero
+                livroViewModel.salvarGeneroSorteador(novoGenero)
             }
         )
 
         CardSeusLivros(
-            livros = livroViewModel.livros,
+            livros = listaLivros,
             livrosFiltrados = livrosFiltrados,
             generoSelecionado = generoSelecionado
         )
@@ -116,7 +130,9 @@ fun SorteadorScreen(
             corTexto = Color.White,
             onClick = {
                 if (livrosFiltrados.isNotEmpty()) {
-                    livroSorteado = livrosFiltrados.random()
+                    val sorteado = livrosFiltrados.random()
+                    livroSorteado = sorteado
+                    livroViewModel.salvarUltimoLivroSorteadoId(sorteado.id)
                 } else {
                     Toast.makeText(
                         context,
@@ -147,7 +163,9 @@ fun SorteadorScreen(
             },
             onSortearNovamente = {
                 if (livrosFiltrados.isNotEmpty()) {
-                    livroSorteado = livrosFiltrados.random()
+                    val sorteado = livrosFiltrados.random()
+                    livroSorteado = sorteado
+                    livroViewModel.salvarUltimoLivroSorteadoId(sorteado.id)
                 } else {
                     livroSorteado = null
                     Toast.makeText(
@@ -181,7 +199,7 @@ fun SorteadorScreen(
                     autor = "Não informado",
                     ano = "",
                     genero = genero,
-                    status = Status.TBR.texto
+                    status = StatusLivro.TBR.texto,
                 )
 
                 livroViewModel.adicionarLivro(novoLivro)
@@ -206,12 +224,45 @@ private fun SorteadorHeader() {
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
+    }
+}
 
-        Text(
-            text = "Escolha um gênero e sorteie sua próxima leitura",
-            color = TextoSecundario,
-            fontSize = 14.sp
-        )
+@Composable
+private fun CardUltimoSorteado(livro: Livro) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = LilasClaro.copy(alpha = 0.3f)),
+        border = BorderStroke(1.dp, LilasBorda)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "Último livro sorteado",
+                    color = LilasPrincipal,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Text(
+                text = livro.titulo,
+                color = TextoPrincipal,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Text(
+                text = livro.genero,
+                color = TextoSecundario,
+                fontSize = 13.sp
+            )
+        }
     }
 }
 
@@ -655,65 +706,11 @@ private fun CadastroLivroBottomSheet(
 @Preview(
     showBackground = true,
     showSystemUi = true,
-    name = "Sorteador com livros"
+    name = "Sorteador"
 )
 @Composable
 private fun SorteadorScreenPreview() {
-    val previewViewModel = remember {
-        LivroViewModel().apply {
-            adicionarLivro(
-                Livro(
-                    titulo = "A Biblioteca da Meia-Noite",
-                    autor = "Matt Haig",
-                    ano = "2020",
-                    genero = "Ficção",
-                    status = Status.TBR.texto
-                )
-            )
-
-            adicionarLivro(
-                Livro(
-                    titulo = "É Assim que Acaba",
-                    autor = "Colleen Hoover",
-                    ano = "2016",
-                    genero = "Romance",
-                    status = Status.TBR.texto
-                )
-            )
-
-            adicionarLivro(
-                Livro(
-                    titulo = "O Hobbit",
-                    autor = "J.R.R. Tolkien",
-                    ano = "1937",
-                    genero = "Fantasia",
-                    status = Status.TBR.texto
-                )
-            )
-        }
-    }
-
     LumeTheme {
-        SorteadorScreen(
-            livroViewModel = previewViewModel
-        )
-    }
-}
-
-@Preview(
-    showBackground = true,
-    showSystemUi = true,
-    name = "Sorteador vazio"
-)
-@Composable
-private fun SorteadorScreenVazioPreview() {
-    val previewViewModel = remember {
-        LivroViewModel()
-    }
-
-    LumeTheme {
-        SorteadorScreen(
-            livroViewModel = previewViewModel
-        )
+        SorteadorScreen()
     }
 }

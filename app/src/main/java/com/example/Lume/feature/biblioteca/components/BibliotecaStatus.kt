@@ -11,6 +11,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.shape.RoundedCornerShape
 import com.example.Lume.model.StatusLivro
@@ -18,13 +19,8 @@ import com.example.Lume.ui.theme.LilasPrincipal
 
 
 @Composable
-fun BibliotecaStatus(statusEscolhido: StatusLivro?, onStatusSelecionado: (StatusLivro?) -> Unit) {
+fun BibliotecaStatus(statusEscolhido: StatusLivro, onStatusSelecionado: (StatusLivro) -> Unit) {
     Row (horizontalArrangement = Arrangement.spacedBy(8.dp)){
-        StatusItem(
-            texto = "Todos",
-            selecionado = statusEscolhido == null,
-            onClick = { onStatusSelecionado(null) }
-        )
         StatusLivro.entries.forEach { status ->
             StatusItem(
                 texto = status.texto,
@@ -67,13 +63,14 @@ private fun StatusItem(texto: String, selecionado: Boolean, onClick: () -> Unit)
                 color = corBorda,
                 shape = formato
             )
+            .clip(formato)
+            .clickable {
+                onClick()
+            }
             .padding(
                 horizontal = 16.dp,
                 vertical = 8.dp
             )
-            .clickable {
-                onClick()
-            }
     )
 }
 
