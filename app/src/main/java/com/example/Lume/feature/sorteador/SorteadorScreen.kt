@@ -47,6 +47,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.Lume.model.Livro
 import com.example.Lume.model.LivroViewModel
@@ -67,9 +68,9 @@ fun SorteadorScreen(
     livroViewModel: LivroViewModel = viewModel()
 ) {
     val context = LocalContext.current
-    val listaLivros by livroViewModel.livros.collectAsState()
-    val generoSalvo by livroViewModel.generoSorteador.collectAsState()
-    val ultimoIdSalvo by livroViewModel.ultimoLivroSorteadoId.collectAsState()
+    val listaLivros by livroViewModel.livros.collectAsStateWithLifecycle()
+    val generoSalvo by livroViewModel.generoSorteador.collectAsStateWithLifecycle()
+    val ultimoIdSalvo by livroViewModel.ultimoLivroSorteadoId.collectAsStateWithLifecycle()
 
     var generoSelecionado by remember(generoSalvo) { mutableStateOf(generoSalvo) }
     var livroSorteado by remember { mutableStateOf<Livro?>(null) }
