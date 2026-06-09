@@ -37,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.Lume.feature.Cadastro.CadastroScreen
 import com.example.Lume.feature.biblioteca.BibliotecaScreen
-import com.example.Lume.feature.sorteador.SorteadorScreen
 import com.example.Lume.ui.theme.LilasClaro
 import com.example.Lume.ui.theme.LilasPrincipal
 import com.example.Lume.ui.theme.LumeTheme
@@ -196,10 +195,10 @@ fun LivrosScreen() {
     BibliotecaScreen()
 }
 
-@Composable
-fun SortearScreen() {
-    SorteadorScreen()
-}
+//@Composable
+//fun SortearScreen() {
+//    SorteadorScreen()
+//}
 
 @Composable
 fun HomeScreen() {
